@@ -23,4 +23,4 @@ app.listen(config.PORT, async function () {
 app.all('*', authenticate.isAuthorized)
 app.use(routes)
 
-module.exports = app
+// module.exports = app

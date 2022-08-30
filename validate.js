@@ -107,6 +107,27 @@ exports.validate = (method) => {
 			]
 		}
 
+		case '/servers/create': {
+			return [
+				body('fullName').not().isEmpty().isString().withMessage('Full name is required!'),
+				body('phone').not().isEmpty().isString().withMessage('Phone is required!'),
+			]
+		}
+
+		case '/servers/update': {
+			return [
+				param('id').isInt().withMessage('ID must be a number!'),
+				body('fullName').optional().not().isEmpty().isString().withMessage('Full name is required!'),
+				body('phone').optional().not().isEmpty().isString().withMessage('Phone is required!'),
+				body('status')
+					.optional()
+					.custom((value) => {
+						return ['ACTIVE', 'SUSPENDED', 'INACTIVE'].includes(value)
+					})
+					.withMessage('status can only be active, suspended or inactive!'),
+			]
+		}
+
 		case '/inventories/create': {
 			return [
 				body('name').not().isEmpty().isString().withMessage('name is required!'),

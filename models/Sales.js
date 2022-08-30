@@ -50,6 +50,7 @@ module.exports = function (sequelize, Sequelize) {
 
 	Sales.associate = function (models) {
 		models.sales.belongsTo(models.users, { onDelete: 'CASCADE', targetKey: 'id', foreignKey: 'userId' })
+		models.sales.belongsTo(models.servers, { onDelete: 'CASCADE', targetKey: 'id', foreignKey: 'serverId' })
 	}
 
 	return Sales

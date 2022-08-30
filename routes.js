@@ -4,6 +4,7 @@ const { upload } = require('./helpers/upload')
 
 const products = require('./controllers/products')
 const sales = require('./controllers/sales')
+const servers = require('./controllers/servers')
 const inventories = require('./controllers/inventories')
 const general = require('./controllers/general')
 const analytics = require('./controllers/analytics')
@@ -49,5 +50,10 @@ router.post('/sales/create', validate('/sales/create'), sales.createSale)
 router.post('/sales/update/:id', validate('/sales/update'), isAdmin, sales.updateSale)
 router.get('/sales', sales.getSales)
 router.get('/sales/get-detail/:id', validate('id'), sales.getSaleDetail)
+
+router.post('/servers/create', validate('/servers/create'), servers.createServer)
+router.post('/servers/update/:id', validate('/servers/update'), isAdmin, servers.updateServer)
+router.get('/servers', servers.getServers)
+router.get('/servers/get-detail/:id', validate('id'), servers.getServerDetail)
 
 module.exports = router

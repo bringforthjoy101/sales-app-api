@@ -87,7 +87,7 @@ const getServerDetail = async (req, res) => {
 		const { id } = req.params
 		const server = await DB.servers.findOne({
 			where: { id },
-			// include: [{ model: DB.sales, order: [['id', 'DESC']] }],
+			include: [{ model: DB.sales, order: [['id', 'DESC']] }],
 		})
 		if (!server) return errorResponse(res, `Server with ID ${id} not found!`)
 		return successResponse(res, `Server details retrived!`, server)

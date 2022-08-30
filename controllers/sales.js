@@ -49,7 +49,7 @@ const createSale = async (req, res) => {
 	try {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() })
-		const { amount, amountPaid, products, subTotal, discount } = req.body
+		const { amount, amountPaid, products, subTotal, discount, serverId } = req.body
 		const userId = req.user.id
 		const balance = Number(amountPaid) - Number(amount)
 		const insertData = {
@@ -60,6 +60,7 @@ const createSale = async (req, res) => {
 			products,
 			subTotal,
 			discount,
+			serverId,
 			userId,
 		}
 		await DB.sales.create(insertData)
@@ -100,7 +101,10 @@ const getSales = async (req, res) => {
 		if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() })
 		const sales = await DB.sales.findAll({
 			where,
-			include: [{ model: DB.users, attributes: ['id', 'fullName'] }],
+			include: [
+				{ model: DB.users, attributes: ['id', 'fullName'] },
+				{ model: DB.servers, attributes: ['id', 'fullName'] },
+			],
 			order: [['id', 'DESC']],
 			attributes: { exclude: ['userId'] },
 		})
@@ -125,7 +129,10 @@ const getSaleDetail = async (req, res) => {
 		const { id } = req.params
 		const sale = await DB.sales.findOne({
 			where: { id },
-			include: [{ model: DB.users, attributes: ['id', 'fullName'] }],
+			include: [
+				{ model: DB.users, attributes: ['id', 'fullName'] },
+				{ model: DB.servers, attributes: ['id', 'fullName'] },
+			],
 		})
 		if (!sale) return errorResponse(res, `Sale with ID ${id} not found!`)
 		return successResponse(res, `Sale details retrived!`, sale)

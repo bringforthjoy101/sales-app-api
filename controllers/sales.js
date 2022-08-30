@@ -63,8 +63,8 @@ const createSale = async (req, res) => {
 			serverId,
 			userId,
 		}
-		await DB.sales.create(insertData)
-		return successResponse(res, `Sale placed successfully!`)
+		const sales = await DB.sales.create(insertData)
+		return successResponse(res, `Sale placed successfully!`, sales.id)
 	} catch (error) {
 		console.log(error)
 		return errorResponse(res, `An error occured:- ${error.message}`)

@@ -39,7 +39,7 @@ router.get('/products', products.getProducts)
 router.get('/products/get-detail/:id', validate('id'), isAdmin, products.getProductDetail)
 router.get('/products/delete/:id', validate('id'), isAdmin, products.deleteProduct)
 
-router.post('/inventories/create', validate('/inventories/create'), isAdmin, inventories.createInventory)
+router.post('/inventories/create', validate('/inventories/create'), inventories.createInventory)
 router.post('/inventories/update/:id', validate('/inventories/update'), inventories.updateInventory)
 router.get('/inventories', inventories.getInventories)
 router.get('/inventories/get-detail/:id', validate('id'), inventories.getInventoryDetail)

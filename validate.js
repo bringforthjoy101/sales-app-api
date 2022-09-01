@@ -78,9 +78,9 @@ exports.validate = (method) => {
 				body('status')
 					.optional()
 					.custom((value) => {
-						return ['available', 'unavailable'].includes(value)
+						return ['IN_STOCK', 'OUT_OF_STOCK'].includes(value)
 					})
-					.withMessage('status can only be available or unavailable!'),
+					.withMessage('status can only be IN_STOCK or OUT_OF_STOCK!'),
 			]
 		}
 

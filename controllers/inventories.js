@@ -83,7 +83,7 @@ const updateInventory = async (req, res) => {
 		const { name, qty, type, department, description, status } = req.body
 		const inventory = await DB.inventories.findOne({ where: { id } })
 		if (!inventory) return errorResponse(res, `Inventory with ID ${id} not found!`)
-		if (Number(inventory.qty) - Number(qty) < 0) return errorResponse(res, `Available stock not enough. Only ${inventory.qty} left`)
+		if (type === 'OUT' && Number(inventory.qty) - Number(qty) < 0) return errorResponse(res, `Available stock not enough. Only ${inventory.qty} left`)
 		const newQty = type === 'IN' ? Number(inventory.qty) + Number(qty) : type === 'OUT' ? Number(inventory.qty) - Number(qty) : null
 		console.log('old', inventory.qty, 'qty', qty, 'new', newQty)
 		const updateData = {

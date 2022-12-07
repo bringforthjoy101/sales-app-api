@@ -134,7 +134,7 @@ const isAuthorized = async (req, res, next) => {
 }
 
 const isAdmin = async (req, res, next) => {
-	if (req.user.role != 'ADMIN') return handleResponse(res, 401, false, `Access Denied / Unauthorized request`)
+	if (req.user.role === 'SALES_REP') return handleResponse(res, 401, false, `Access Denied / Unauthorized request`)
 	next()
 }
 

@@ -92,6 +92,7 @@ exports.validate = (method) => {
 						return Array.isArray(value)
 					})
 					.withMessage('products must be an array of objects'),
+				body('serverId').not().isEmpty().isInt().withMessage('Server/ Waiter is required!'),
 			]
 		}
 

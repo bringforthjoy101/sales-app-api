@@ -83,26 +83,32 @@ const login = async (req, res) => {
 }
 
 const changePassword = async (req, res, next) => {
-	res.set('Access-Control-Allow-Origin', '*')
-	const errors = validationResult(req)
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() })
-	}
+	console.log('here')
+	// console.log(req.body)
+	// const errors = validationResult(req)
+	// if (!errors.isEmpty()) {
+	// 	return res.status(400).json({ errors: errors.array() })
+	// }
 
 	const { phone, oldPassword, newPassword } = req.body
 	try {
+		console.log('active here')
 		const user = await DB.users.findOne({ where: { phone, status: 'ACTIVE' } })
-		if (!user) return handleResponse(res, 400, false, `User not found!`)
+		console.log('after query', user)
+		if (!user) return errorResponse(res, `User not found!`)
 		const validPassword = await bcrypt.compareSync(oldPassword, user.password)
-		if (!validPassword) return handleResponse(res, 400, false, `Incorrect  old password!`)
+		console.log({ validPassword })
+		if (!validPassword) return errorResponse(res, `Incorrect  old password!`)
 		const salt = await bcrypt.genSalt(15)
 		const hashPassword = await bcrypt.hash(newPassword, salt)
+		console.log({ hashPassword })
 		const changedPassword = await user.update({ password: hashPassword })
-		if (!changedPassword) return handleResponse(res, 400, false, `Unable change password!`)
-		return handleResponse(res, 200, true, `Password changed successfully`)
+		console.log({ changedPassword })
+		if (!changedPassword) return errorResponse(res, `Unable change password!`)
+		return successResponse(res, `Password changed successfully`)
 	} catch (error) {
 		console.log(error)
-		return handleResponse(res, 401, false, `An error occured - ${error}`)
+		return errorResponse(res, `An error occured - ${error}`)
 	}
 }
 

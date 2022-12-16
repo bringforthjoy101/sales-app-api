@@ -84,13 +84,15 @@ const updateInventory = async (req, res) => {
 		const inventory = await DB.inventories.findOne({ where: { id } })
 		if (!inventory) return errorResponse(res, `Inventory with ID ${id} not found!`)
 		if (type === 'OUT' && Number(inventory.qty) - Number(qty) < 0) return errorResponse(res, `Available stock not enough. Only ${inventory.qty} left`)
+		console.log('qty', inventory.qty)
 		const newQty = type === 'IN' ? Number(inventory.qty) + Number(qty) : type === 'OUT' ? Number(inventory.qty) - Number(qty) : null
 		console.log('old', inventory.qty, 'qty', qty, 'new', newQty)
 		const updateData = {
 			name: name ? name : inventory.name,
-			qty: qty && newQty ? newQty : inventory.qty,
+			qty: qty ? newQty : inventory.qty,
 			status: status ? status : inventory.status,
 		}
+		console.log({ updateData })
 		await DB.inventoryHistories.create({ department, qty, type, newQty, description, userId: req.user.id, inventoryId: id })
 		await inventory.update(updateData)
 		return successResponse(res, `Inventory updated successfully!`)
@@ -110,7 +112,7 @@ const getInventories = async (req, res) => {
 	try {
 		const errors = validationResult(req)
 		if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() })
-		const inventories = await DB.inventories.findAll({ include: { model: DB.users, attributes: ['id', 'fullName'] }, order: [['id', 'DESC']] })
+		const inventories = await DB.inventories.findAll({ include: { model: DB.users, attributes: ['id', 'fullName'] }, order: [['createdAt', 'DESC']] })
 
 		if (!inventories.length) return successResponse(res, `No inventory available!`, [])
 		return successResponse(res, `${inventories.length} inventor${inventories.length > 1 ? 'ies' : ''} retrived!`, inventories)
@@ -137,7 +139,7 @@ const getInventoryDetail = async (req, res) => {
 				{
 					model: DB.inventoryHistories,
 					attributes: { exclude: ['updatedAt', 'inventoryId', 'userId'] },
-					order: [['id', 'DESC']],
+					order: [['createdAt', 'DESC']],
 					include: { model: DB.users, attributes: ['id', 'fullName'] },
 				},
 				{ model: DB.users, attributes: ['id', 'fullName'] },

@@ -100,6 +100,7 @@ const changePassword = async (req, res, next) => {
 		console.log({ validPassword })
 		if (!validPassword) return errorResponse(res, `Incorrect  old password!`)
 		const salt = await bcrypt.genSalt(15)
+		console.log({ salt })
 		const hashPassword = await bcrypt.hash(newPassword, salt)
 		console.log({ hashPassword })
 		const changedPassword = await user.update({ password: hashPassword })
